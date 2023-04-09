@@ -29,7 +29,6 @@ routes.get("/rewards/:cpf", rewardController.index);
 /** Create Point */
 routes.post(
   "/report",
-  upload.single("image"),
   celebrate(
     {
       body: Joi.object().keys({
@@ -38,6 +37,7 @@ routes.post(
         latitude: Joi.number().required(),
         longitude: Joi.number().required(),
         items: Joi.string().required(),
+        image: Joi.string().required()
       }),
     },
     { abortEarly: false }

@@ -1,5 +1,7 @@
 import { Request, Response } from "express";
 import knex from "../database/connection";
+import fs from 'fs';
+import crypto from 'crypto';
 
 class PointsController {
   async index(request: Request, response: Response) {
@@ -81,18 +83,26 @@ class PointsController {
       cpf,
       latitude,
       longitude,
-      items,
+      items
     } = request.body;
+
+    const imageName = crypto.randomBytes(10).toString('hex');
+
+    const image = request.body.image.split(';base64,').pop();
 
     const trx = await knex.transaction();
 
     const point = {
-      image: request.file.filename,
+      image: `${imageName}.jpeg`,
       name,
       cpf,
       latitude,
       longitude,
     };
+
+    fs.writeFile(`uploads/${imageName}.jpeg`, image, 'base64', function(err) {
+      console.log(err);
+    });
 
     const insertedIds = await trx("points").insert(point);
 
